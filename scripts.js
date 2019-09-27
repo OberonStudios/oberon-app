@@ -19,28 +19,50 @@ const HomeComponent = {
 }
 const FeaturesComponent = {
   template: `<div class="text-center">
-                <p>{{ data }}</p>
-                <input v-model="address" placeholder="Enter account address">
+                <p>{{ account }}</p>
+                <p>{{ delegations }}</p>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <button v-on:click="queryData()" class="btn btn-primary" type="button" id="button-addon1">query</button>
+                  </div>
+                  <input v-model="address" type="text" class="form-control" placeholder="Enter account address" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                </div>
                 <p>Address is: {{ address }}</p>
-                <button v-on:click="getAccount()">Get</button>
               </div>`,
   // mounted () {  },
   methods: {
-    getAccount () {
+    queryData() {
+      this.getAccount(),
+      this.getDelegations()
+    },
+    getAccount() {
       axios
-        .get(`https://coris.network/cosmos/rpc1/auth/accounts/${this.address}`)
+        .get(`${this.RPC}/auth/accounts/${this.address}`)
         .then(response => {
-          this.data = response.data;
+          this.account = response.data;
         })
         .catch(function (error) {
           console.log(error);
         })
-    }
+    },
+    getDelegations() {
+      axios
+        .get(`${this.RPC}/staking/delegators/${this.address}/delegations`)
+        .then(response => {
+          this.delegations = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+    },
   }, 
   data() { 
     return { 
+      RPC: `https://stargate.cosmos.network`,
+      // RPC: `https://coris.network/cosmos/rpc1`,
       address: ``,
-      data: ``
+      account: ``,
+      delegations: ``
     }
   } 
 }
