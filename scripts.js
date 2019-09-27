@@ -8,7 +8,7 @@ const HomeComponent = {
                 </div>
                 <h2 class="mt-5 text-center" v-if="random>75">Congrats! You are definitely a bear! 🐻</h2>
                 <h2 class="mt-5 text-center" v-else-if="random>40">You might be a panda, boi! 🐼</h2>
-                <h2 class="mt-5 text-center" v-else>Sorry, but you a just a dog! 🐶</h2>
+                <h2 class="mt-5 text-center" v-else>Sorry, but you are just a dog! 🐶</h2>
               </p>
             </main>`,
   data: function() {
@@ -18,8 +18,32 @@ const HomeComponent = {
   }
 }
 const FeaturesComponent = {
-  template: `<p class="text-center">{{message}}</p>`,
-  data: function() { return({ message: `¶Insert Paragraph`})  } }
+  template: `<div class="text-center">
+                <p>{{ data }}</p>
+                <input v-model="address" placeholder="Enter account address">
+                <p>Address is: {{ address }}</p>
+                <button v-on:click="getAccount()">Get</button>
+              </div>`,
+  // mounted () {  },
+  methods: {
+    getAccount () {
+      axios
+        .get(`https://coris.network/cosmos/rpc1/auth/accounts/${this.address}`)
+        .then(response => {
+          this.data = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+    }
+  }, 
+  data() { 
+    return { 
+      address: ``,
+      data: ``
+    }
+  } 
+}
 
 const ContactComponent = {
   template: `<div class="container text-center">
